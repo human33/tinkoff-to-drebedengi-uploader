@@ -1,2 +1,2 @@
 # tinkoff-to-drebedengi-uploader
-This app allows to upload expenses uploaded from tinkoff banking
+This app allows to upload to Drebedengi expenses uploaded from Tinkoff bank
