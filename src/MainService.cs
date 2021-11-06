@@ -15,6 +15,7 @@ namespace T2DUploader
         {
             _toRun = toRun;
             _applicationLifetime = applicationLifetime;
+            _cancellationTokenSource = new CancellationTokenSource();
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

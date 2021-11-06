@@ -4,7 +4,7 @@ namespace T2DUploader
     {
         private static string DREBEDENGI_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-        public string ExportAsCsvLine(Expense expense)
+        public static string ExportAsCsvLine(Expense expense)
         {
             string s = expense.Money + ';' + expense.Currency + ";\"" + expense.Category + "\";" + 
                 expense.Account.Trim() + ';' + expense.Date.ToString(DREBEDENGI_DATE_FORMAT) + ";\"" + 
