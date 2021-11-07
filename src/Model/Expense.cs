@@ -38,6 +38,11 @@ namespace T2DUploader.Model
                 Math.Abs(Money - expense.Money) < 1M; // if difference only in one currency point
         }
 
+        public override int GetHashCode() 
+        {
+            return 0; // implemented to remove warning, use equals instead
+        }
+
         public virtual bool Equals(Expense? other)
         {
             if (other == null)

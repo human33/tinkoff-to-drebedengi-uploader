@@ -79,7 +79,7 @@ namespace T2DUploader
                                 "--desc2account option is required to point to a existing file");
                         }
 
-                        Dictionary<string, string> desc2AccountMapping = null;
+                        Dictionary<string, string> desc2AccountMapping;
                         using (var stream = desc2Account.OpenRead())
                         {
                             desc2AccountMapping = System.Text.Json.JsonSerializer.DeserializeAsync
@@ -120,10 +120,13 @@ namespace T2DUploader
                             throw new NullReferenceException("Uploader is required");
                         }
 
+                        // var logger = serviceProvider.GetService<ILogger>();
 
                         return new MainService(async () => {
+                            Console.Out.WriteLine("Load expenses");
                             await foreach (Expense expense in mapper.Map())
                             {
+                                Console.Out.WriteLine("Handle expense");
                                 await uploader.Upload(expense);
                             }
 
