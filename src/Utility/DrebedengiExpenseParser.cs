@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
+using T2DUploader.Model;
 
 namespace T2DUploader
 {
@@ -24,10 +25,6 @@ namespace T2DUploader
         public static async IAsyncEnumerable<Expense> Parse(Stream dump)
         {
             using StreamReader reader = new(dump);
-                
-            // read header and ignore it
-            // ReSharper disable once UnusedVariable
-            string? header = await reader.ReadLineAsync();
             
             while (!reader.EndOfStream)
             {

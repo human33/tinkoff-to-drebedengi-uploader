@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using T2DUploader.Model;
 using T2DUploader.Utility;
 
 namespace T2DUploader
@@ -53,7 +54,9 @@ namespace T2DUploader
             var currency = cols[2];
             var category = cols[3];
             var desc = cols[4];
-            var account = cols[5]; // account name from drebedengi
+            var account = cols.Length > 5 
+                ? cols[5]
+                : null; // account name from drebedengi
 
             if (date == "Дата операции")
             {

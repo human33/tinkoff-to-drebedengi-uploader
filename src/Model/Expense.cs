@@ -1,19 +1,19 @@
 using System;
 
-namespace T2DUploader
+namespace T2DUploader.Model
 {
     public record Expense
     {
         public decimal Money {get;set;}
         public string Currency {get;set;}
         public string Category {get;set;}
-        public string Account {get;set;}
+        public string? Account {get;set;}
         public DateTime Date {get;set;}
         public string Comment {get;set;}
         public string? User {get;set;}
         public string? ExpenseGroup {get;set;}
 
-        public Expense(decimal money, string currency, string category, string account, DateTime date, 
+        public Expense(decimal money, string currency, string category, string? account, DateTime date, 
             string comment, string? user, string? expenseGroup)
         {
             Money = money;

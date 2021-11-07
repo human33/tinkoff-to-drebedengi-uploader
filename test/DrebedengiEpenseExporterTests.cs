@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using T2DUploader;
+using T2DUploader.Model;
 
 namespace T2DUploader.Test
 {

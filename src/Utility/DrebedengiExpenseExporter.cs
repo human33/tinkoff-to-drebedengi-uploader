@@ -1,3 +1,5 @@
+using T2DUploader.Model;
+
 namespace T2DUploader
 {
     public class DrebedengiExpenseExporter

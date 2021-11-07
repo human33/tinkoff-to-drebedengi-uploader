@@ -1,7 +1,8 @@
 using System;
 using System.Threading.Tasks;
+using T2DUploader.Model;
 
-namespace T2DUploader
+namespace T2DUploader.Services
 {
     class ConsoleInterface : IUserInterface
     {
