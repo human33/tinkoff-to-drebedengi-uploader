@@ -30,9 +30,14 @@ namespace T2DUploader
             
             // parse expenses
             IAsyncEnumerable<Expense> tinkoffExpenses = TinkoffExpenseParser.Parse(_options.tinkoffDump);
-            List<Expense> drebedengiExpenses = await DrebedengiExpenseParser.ParseList(_options.drebedengiDump);
-            
-            using System.IO.TextWriter outStream = _options.o != null 
+            List<Expense> drebedengiExpenses;
+
+            await using (Stream drebedengiDumpStream = _options.drebedengiDump.OpenRead())
+            {
+                drebedengiExpenses = await DrebedengiExpenseParser.ParseList(drebedengiDumpStream);
+            }
+
+            await using System.IO.TextWriter outStream = _options.o != null 
                 ? new System.IO.StreamWriter(_options.o)
                 : System.Console.Out;
 
@@ -40,12 +45,12 @@ namespace T2DUploader
             await foreach (Expense expense in tinkoffExpenses)
             {
                 // there is an expense like read from tinkoff
-                if (drebedengiExpenses.Any(e => e.Like(expense)))
+                var alikeExpenseFromDrebedengi = drebedengiExpenses.FirstOrDefault(e => e.Like(expense));
+                    
+                if (alikeExpenseFromDrebedengi != null)
                 {
-                    var message = $"Expense for {expense.Date.ToString("o")} "+
-                        $"with sum {expense.Money} was found in Drebedengi, upload anyway?";
-
-                    if (! await _interface.Confirm(message)) 
+                    
+                    if (! await _interface.ShouldUploadAlike(alikeExpenseFromDrebedengi, expense)) 
                     {
                         continue;
                     }

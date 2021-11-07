@@ -5,6 +5,6 @@ namespace T2DUploader
 {
     public interface IUserInterface 
     {
-        Task<bool> Confirm(string message);
+        Task<bool> ShouldUploadAlike(Expense fromDrebedengi, Expense fromTinkoff);
     }
 }

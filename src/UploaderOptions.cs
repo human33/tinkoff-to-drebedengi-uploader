@@ -6,8 +6,8 @@ namespace T2DUploader
 {
     public class UploaderOptions 
     {
-        public FileInfo? tinkoffDump {get;set;}
-        public FileInfo? drebedengiDump {get;set;}
+        public Utility.IFileInfo tinkoffDump {get;set;}
+        public Utility.IFileInfo drebedengiDump {get;set;}
         public string? o {get;set;}
     }
 }

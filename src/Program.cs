@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine.Builder;
+using System.Text;
 using Microsoft.Extensions.Logging;
 
 namespace T2DUploader
@@ -16,11 +17,10 @@ namespace T2DUploader
     class Program
     {
         private static async Task Main(string[] args)
-        {           
+        {
             await Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-
                     services.AddSingleton<UploaderOptions, UploaderOptions>((sp) => 
                     {
                         var rootCommand = new RootCommand
@@ -38,10 +38,27 @@ namespace T2DUploader
 
                         rootCommand.Description = "An app to convert tinkoff dump to drebedengi format";
                         System.CommandLine.Parsing.ParseResult r = rootCommand.Parse(args);
+
+                        var td = (FileInfo?)r.ValueForOption("--tinkoff-dump");
+
+                        if (td is not { Exists: true })
+                        {
+                            throw new Exception(
+                                "--tinkoff-dump option is required to point to a existing file");
+                        }
+                        
+                        var db = (FileInfo?)r.ValueForOption("--drebedengi-dump");
+                        
+                        if (db is not { Exists: true })
+                        {
+                            throw new Exception(
+                                "--drebedengi-dump option is required to point to a existing file");
+                        }
+                        
                         return new UploaderOptions() 
                         {
-                            tinkoffDump = (FileInfo?)r.ValueForOption("--tinkoff-dump"),
-                            drebedengiDump = (FileInfo?)r.ValueForOption("--drebedengi-dump"),
+                            tinkoffDump = new T2DUploader.Utility.FileInfo(td),
+                            drebedengiDump = new T2DUploader.Utility.FileInfo(db),
                             o = (string?)r.ValueForOption("-o")
                         };
                     });

@@ -28,7 +28,31 @@ namespace T2DUploader
 
         public bool Like(Expense expense)
         {
-            return Date == expense.Date && Money == expense.Money;
+            return Math.Abs((Date - expense.Date).TotalMinutes) < 10 && 
+                Math.Abs(Money - expense.Money) < 1M; // if difference only in one currency point
+        }
+        
+        public bool Similar(Expense expense)
+        {
+            return Math.Abs((Date - expense.Date).TotalDays) < 1 && 
+                Math.Abs(Money - expense.Money) < 1M; // if difference only in one currency point
+        }
+
+        public virtual bool Equals(Expense? other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+            
+            return Money        == other.Money &&
+                Currency     == other.Currency &&
+                Category     == other.Category &&
+                Account      == other.Account &&
+                Date         == other.Date &&
+                Comment      == other.Comment &&
+                User         == other.User &&
+                ExpenseGroup == other.ExpenseGroup;
         }
     }
 }

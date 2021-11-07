@@ -10,7 +10,7 @@ namespace T2DUploader
     {
         private static string DREBEDENGI_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-        public static async Task<List<Expense>> ParseList(FileInfo dump)
+        public static async Task<List<Expense>> ParseList(Stream dump)
         {
             List<Expense> expenses = new();
             
@@ -21,10 +21,9 @@ namespace T2DUploader
 
             return expenses;
         }
-        public static async IAsyncEnumerable<Expense> Parse(FileInfo dump)
+        public static async IAsyncEnumerable<Expense> Parse(Stream dump)
         {
-            using Stream stream = dump.OpenRead();
-            using StreamReader reader = new(stream);
+            using StreamReader reader = new(dump);
                 
             // read header and ignore it
             // ReSharper disable once UnusedVariable
@@ -49,10 +48,10 @@ namespace T2DUploader
             string[] cols = csvLine.Split(';');
             var money = decimal.Parse(cols[0]);
             var currency = cols[1];
-            var category = cols[2];
+            var category = cols[2].Trim().Trim('"');
             var account = cols[3];
             var date = cols[4];
-            var comment = cols[5];
+            var comment = cols[5].Trim().Trim('"');
             
             // todo: detect header line
             if (date == "")

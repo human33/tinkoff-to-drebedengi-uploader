@@ -1,16 +1,15 @@
 using System;
 using NUnit.Framework;
-using T2DUploader;
 
 namespace T2DUploader.Test
 {
     [TestFixture]
-    public class DrebedengiEpenseExporterTests
+    public class DrebedengiExpenseParserTests
     {
         [Test]
-        public void ExportAsCsvLineHappyPath()
+        public void ParseHappyPath()
         {
-            Expense e = new Expense(
+            Expense expectedExpense = new(
                 money: -100.09M,
                 currency: "руб",
                 category: "Тестовая категория",
@@ -20,10 +19,13 @@ namespace T2DUploader.Test
                 user: null,
                 expenseGroup: null
             );
-            string expectedCsv = "-100.09;руб;\"Тестовая категория\";Повседневные;2015-01-01 00:00:00;\"комментарий\";";
+            string csvLine = "-100.09;руб;\"Тестовая категория\";Повседневные;2015-01-01 00:00:00;\"комментарий\";";
 
-            string csvLine = DrebedengiExpenseExporter.ExportAsCsvLine(e);
-            Assert.AreEqual(expectedCsv, csvLine);
+            
+            var parsedExpense = DrebedengiExpenseParser.Parse(csvLine);
+            
+            
+            Assert.AreEqual(expectedExpense, parsedExpense);
         }
     }
 }

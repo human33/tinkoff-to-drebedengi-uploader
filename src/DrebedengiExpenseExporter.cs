@@ -6,13 +6,13 @@ namespace T2DUploader
 
         public static string ExportAsCsvLine(Expense expense)
         {
-            string s = expense.Money + ';' + expense.Currency + ";\"" + expense.Category + "\";" + 
-                expense.Account.Trim() + ';' + expense.Date.ToString(DREBEDENGI_DATE_FORMAT) + ";\"" + 
+            string s = expense.Money + ";" + expense.Currency + ";\"" + expense.Category + "\";" + 
+                expense.Account.Trim() + ";" + expense.Date.ToString(DREBEDENGI_DATE_FORMAT) + ";\"" + 
                 expense.Comment + "\";";
 
             if (!string.IsNullOrWhiteSpace(expense.ExpenseGroup))
             {
-                s += ';' + expense.ExpenseGroup.Trim() + ';';
+                s += expense.ExpenseGroup.Trim() + ";";
             }
 
             return s;
