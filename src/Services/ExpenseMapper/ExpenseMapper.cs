@@ -22,6 +22,7 @@ namespace T2DUploader.Services.ExpenseMapper
             // parse expenses
             IAsyncEnumerable<Expense> tinkoffExpenses = TinkoffExpenseParser.Parse(_options.TinkoffDump);
             
+            // todo: ignore failed expenses
             // todo: notify about income entries (ignore them or upload as income?)
             // todo: ignore entries with desc "Перевод между счетами" if there are - and + entries
             // todo: ignore ozon (desc "Операция в других кредитных организациях OZONCARD-CUPC-PAY NOVOSIBIRSK RUS") 
