@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace T2DUploader
 {
@@ -9,6 +10,7 @@ namespace T2DUploader
     {
         private readonly Func<Task> _toRun;
         private readonly IHostApplicationLifetime _applicationLifetime;
+        private readonly ILogger _logger;
         private readonly CancellationTokenSource _cancellationTokenSource;
 
         public MainService(Func<Task> toRun, IHostApplicationLifetime applicationLifetime)
@@ -21,9 +23,23 @@ namespace T2DUploader
         public Task StartAsync(CancellationToken cancellationToken)
         {
             cancellationToken.Register(() => _cancellationTokenSource.Cancel());
-            Task whenRun = Task.Run(_toRun, _cancellationTokenSource.Token);
-            whenRun.ContinueWith((task) => _applicationLifetime.StopApplication(),
-                _cancellationTokenSource.Token);
+            Task whenRun = Task.Run(async () => {
+                    try 
+                    {
+                        await _toRun();
+                    } 
+                    catch (System.Exception e) 
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Out.WriteLine("Exception occured:\n" + e);
+                        Console.ResetColor();
+                    }
+
+                    Console.Out.WriteLine("App stopped");
+                    _applicationLifetime.StopApplication();
+                }, 
+                _cancellationTokenSource.Token
+            );
             
             return Task.CompletedTask;
         }
