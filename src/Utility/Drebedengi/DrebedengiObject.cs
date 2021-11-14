@@ -1,11 +1,11 @@
 namespace T2DUploader.Utility.Drebedengi
 {
-    public record Object
+    public record DrebedengiObject
     {
         /// <summary>
         /// Ид категории/источника/счета
         /// </summary>
-        public long ID { get; set; }
+        public long Id { get; set; }
         public long ParentId { get; set; }
         public ObjectType Type { get; set; }
         public string Name { get; set; }

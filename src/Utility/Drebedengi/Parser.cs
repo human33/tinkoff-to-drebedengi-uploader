@@ -1,6 +1,11 @@
 using System;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using CsvHelper;
+using CsvHelper.Configuration;
+using T2DUploader.Utility.Drebedengi.CsvMappings;
 
 namespace T2DUploader.Utility.Drebedengi
 {
@@ -19,28 +24,40 @@ namespace T2DUploader.Utility.Drebedengi
             Database result = new();
             await using Stream stream = file.OpenRead();
             using StreamReader reader = new(stream);
+            
+            using CsvReader csvReader = new(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = ";",
+                HasHeaderRecord = false
+            });
+
+            csvReader.Context.RegisterClassMap<CurrencyMap>();
+            csvReader.Context.RegisterClassMap<DrebedengiObjectMap>();
+            csvReader.Context.RegisterClassMap<RecordMap>();
 
             ParsingStage parsingStage = ParsingStage.None;
 
-            while (!reader.EndOfStream)
-            {
-                string? line = await reader.ReadLineAsync();
 
-                if (line == null)
+            while (await csvReader.ReadAsync())
+            {
+                string? firstCol = csvReader.GetField(0); // get first column
+
+                if (firstCol == null)
                 {
                     break;
                 }
 
-                line = line.Trim();
+                firstCol = firstCol.Trim();
 
-                if (line.StartsWith('['))
+                if (firstCol[0] == '[' && firstCol.Last() == ']')
                 {
-                    parsingStage = line switch
+                    parsingStage = firstCol switch
                     {
                         "[currency]" => ParsingStage.Currency,
                         "[objects]" => ParsingStage.Objects,
                         "[records]" => ParsingStage.Records,
-                        _ => throw new ArgumentOutOfRangeException("line", $"unknown symbol {line}")
+                        _ => throw new ArgumentOutOfRangeException("firstCol", 
+                            $"unknown symbol {firstCol}")
                     };
                     continue;
                 }
@@ -48,15 +65,15 @@ namespace T2DUploader.Utility.Drebedengi
                 switch (parsingStage)
                 {
                     case ParsingStage.Currency:
-                        // todo: parse currencies
+                        var currency = csvReader.GetRecord<Currency>();
                         result.Currencies.Add(currency);
                         break;
                     case ParsingStage.Objects:
-                        // todo: parse objects
-                        result.Objects.Add(@object);
+                        var dObject = csvReader.GetRecord<DrebedengiObject>();
+                        result.Objects.Add(dObject);
                         break;
                     case ParsingStage.Records:
-                        // todo: parse records
+                        var @record = csvReader.GetRecord<Record>();
                         result.Records.Add(@record);
                         break;
                     default:
@@ -65,6 +82,8 @@ namespace T2DUploader.Utility.Drebedengi
 
                 }
             }
+
+            return result;
         }
     }
 }

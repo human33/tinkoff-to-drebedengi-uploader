@@ -13,6 +13,7 @@
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
 <!--    <PackageReference Include="System.ServiceModel.Http" Version="4.8.1" />-->
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.8.1" />
+    <PackageReference Include="CsvHelper" Version="27.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -24,6 +25,12 @@
 
   <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
     <Compile Remove="test/**/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <Content Include="test\Dumps\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   
 </Project>
