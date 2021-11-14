@@ -19,7 +19,7 @@ namespace T2DUploader.Utility.Drebedengi
             Records
         }
         
-        public static async Task<Database> ParseExtendedFormat(FileInfo file)
+        public static async Task<Database> ParseExtendedFormat(IFileInfo file)
         {
             Database result = new();
             await using Stream stream = file.OpenRead();
@@ -66,11 +66,11 @@ namespace T2DUploader.Utility.Drebedengi
                 {
                     case ParsingStage.Currency:
                         var currency = csvReader.GetRecord<Currency>();
-                        result.Currencies.Add(currency);
+                        result.Currencies.Add(currency.Id, currency);
                         break;
                     case ParsingStage.Objects:
                         var dObject = csvReader.GetRecord<DrebedengiObject>();
-                        result.Objects.Add(dObject);
+                        result.Objects.Add(dObject.Id, dObject);
                         break;
                     case ParsingStage.Records:
                         var @record = csvReader.GetRecord<Record>();

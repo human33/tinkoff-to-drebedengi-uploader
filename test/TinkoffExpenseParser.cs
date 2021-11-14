@@ -12,7 +12,7 @@ namespace T2DUploader.Test
         {
             Expense expectedExpense = new(
                 money: -100.09M,
-                currency: "руб",
+                currency: "Руб",
                 category: "Тестовая категория",
                 account: "Повседневные",
                 date: new DateTime(2015, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),

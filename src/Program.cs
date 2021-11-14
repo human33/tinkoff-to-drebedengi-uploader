@@ -34,7 +34,10 @@ namespace T2DUploader
                     "Path to description to account mapping"),
                 new Option<string>(
                     "-o",
-                    "An option whose argument is parsed as a FileInfo")
+                    "Output path, if ommited will write to stdout"),
+                new Option<bool>(
+                    "-fo",
+                    "rewrite output file"),
             };
 
             rootCommand.Description = "An app to convert tinkoff dump to drebedengi format";
@@ -50,13 +53,25 @@ namespace T2DUploader
                         if (db is not { Exists: true })
                         {
                             throw new Exception(
-                                "--drebedengi-dump option is required to point to a existing file");
+                                "--drebedengi-dump option is required to point to a existing file, now it's:" + db?.FullName);
+                        }
+                        
+                        string? outputPath = (string?)r.ValueForOption("-o");
+                        bool? outputPathForceRewrite = (bool?)r.ValueForOption("-fo");
+
+                        if (!string.IsNullOrWhiteSpace(outputPath) && System.IO.File.Exists(outputPath))
+                        {
+                            if (outputPathForceRewrite is true) {
+                                System.IO.File.Delete(outputPath);
+                            } else {
+                                throw new Exception("output file already exists");
+                            }
                         }
 
                         return new UploaderOptions()
                         {
                             DrebedengiDump = new T2DUploader.Utility.FileInfo(db),
-                            OutputFilePath = (string?)r.ValueForOption("-o"),
+                            OutputFilePath = outputPath,
                         };
                     });
                     services.AddSingleton<IUploader, Uploader>();
@@ -126,7 +141,6 @@ namespace T2DUploader
                             Console.Out.WriteLine("Load expenses");
                             await foreach (Expense expense in mapper.Map())
                             {
-                                Console.Out.WriteLine("Handle expense");
                                 await uploader.Upload(expense);
                             }
 

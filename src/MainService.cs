@@ -10,7 +10,7 @@ namespace T2DUploader
     {
         private readonly Func<Task> _toRun;
         private readonly IHostApplicationLifetime _applicationLifetime;
-        private readonly ILogger _logger;
+        // private readonly ILogger _logger;
         private readonly CancellationTokenSource _cancellationTokenSource;
 
         public MainService(Func<Task> toRun, IHostApplicationLifetime applicationLifetime)

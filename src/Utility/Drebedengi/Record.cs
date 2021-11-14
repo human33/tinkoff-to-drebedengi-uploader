@@ -16,7 +16,7 @@ namespace T2DUploader.Utility.Drebedengi
         
         public long AccountId { get; set; }
         public DateTime Date { get; set; }
-        public string Comment { get; set; }
+        public string Comment { get; set; } = "";
         public long? UserId { get; set; }
         public long? GroupId { get; set; }
     }

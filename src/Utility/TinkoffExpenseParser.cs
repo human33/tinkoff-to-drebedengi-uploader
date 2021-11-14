@@ -21,22 +21,17 @@ namespace T2DUploader
 
         public static async IAsyncEnumerable<Expense> Parse(IFileInfo dump)
         {
-            Console.Out.WriteLine("Open file for reading");
             using Stream stream = dump.OpenRead();
             
             // because tinkoff encodes dump in this encoding 
             using StreamReader reader = new(stream, Encoding.GetEncoding("windows-1251")); 
-            Console.Out.WriteLine("Reading header");
             
             // read header and ignore it
             // ReSharper disable once UnusedVariable
             string? header = await reader.ReadLineAsync();
-            
-            Console.Out.WriteLine("Header read");
 
             while (!reader.EndOfStream)
             {
-                Console.Out.WriteLine("Read line");
                 string? line = await reader.ReadLineAsync();
 
                 if (line == null)
@@ -44,8 +39,7 @@ namespace T2DUploader
                     break;
                 }
 
-                Console.Out.WriteLine("Parse line");
-                Expense parsed = Parse(line);
+               Expense parsed = Parse(line);
                 yield return parsed;
             }
         }
@@ -78,7 +72,7 @@ namespace T2DUploader
 
             currency = currency switch
             {
-                "RUB" => "руб", // use drebedengi currency format
+                "RUB" => "Руб", // use drebedengi currency format
                 "USD" => "USD",
                 _ => currency
             };

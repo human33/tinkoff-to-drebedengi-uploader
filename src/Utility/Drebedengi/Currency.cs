@@ -4,7 +4,7 @@ namespace T2DUploader.Utility.Drebedengi
     {
         public long Id { get; set; }
         
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
 
         /// <summary>
         /// Поставить 1
@@ -14,7 +14,7 @@ namespace T2DUploader.Utility.Drebedengi
         /// <summary>
         /// International currency code
         /// </summary>
-        public string Code { get; set; }
+        public string Code { get; set; } = "";
 
         /// <summary>
         /// false - don't update

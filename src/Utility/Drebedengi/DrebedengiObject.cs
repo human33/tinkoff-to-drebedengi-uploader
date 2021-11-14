@@ -8,12 +8,12 @@ namespace T2DUploader.Utility.Drebedengi
         public long Id { get; set; }
         public long ParentId { get; set; }
         public ObjectType Type { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
         
         /// <summary>
         /// Для импорта из других программ, всегда пустая строка 
         /// </summary>
-        public string UserId { get; set; }
+        public string UserId { get; set; } = "";
         
         /// <summary>
         /// Not used yet
