@@ -175,16 +175,16 @@ namespace T2DUploader.Test.Utility.Drebedengi
             var db = await Parser.ParseExtendedFormat(internalFileInfo);
             
             Assert.AreEqual(2, db.Currencies.Count);
-            Assert.AreEqual(rub, db.Currencies[0]);
-            Assert.AreEqual(usd, db.Currencies[1]);
+            Assert.AreEqual(rub, db.Currencies[23955471]);
+            Assert.AreEqual(usd, db.Currencies[12411511]);
             
             Assert.AreEqual(6, db.Objects.Count);
-            Assert.AreEqual(objects[0], db.Objects[0]);
-            Assert.AreEqual(objects[1], db.Objects[1]);
-            Assert.AreEqual(objects[2], db.Objects[2]);
-            Assert.AreEqual(objects[3], db.Objects[3]);
-            Assert.AreEqual(objects[4], db.Objects[4]);
-            Assert.AreEqual(objects[5], db.Objects[5]);
+            Assert.AreEqual(objects[0], db.Objects[objects[0].Id]);
+            Assert.AreEqual(objects[1], db.Objects[objects[1].Id]);
+            Assert.AreEqual(objects[2], db.Objects[objects[2].Id]);
+            Assert.AreEqual(objects[3], db.Objects[objects[3].Id]);
+            Assert.AreEqual(objects[4], db.Objects[objects[4].Id]);
+            Assert.AreEqual(objects[5], db.Objects[objects[5].Id]);
             
             Assert.AreEqual(4, db.Records.Count);
             Assert.AreEqual(records[0], db.Records[0]);

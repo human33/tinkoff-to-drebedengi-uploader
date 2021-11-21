@@ -14,20 +14,19 @@ namespace T2DUploader.Test
                 money: -100.09M,
                 currency: "Руб",
                 category: "Тестовая категория",
-                account: "Повседневные",
+                account: null,
                 date: new DateTime(2015, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
                 comment: "комментарий",
                 user: null,
                 expenseGroup: null
             );
             
-            string csvLine = "01.01.2015 00:00:00;-100,09;RUB;Тестовая категория;комментарий;Повседневные";
+            string csvLine = "\"01.01.2015 00:00:00\";\"01.01.2015\";\"*1111\";\"OK\";\"-100\";\"RUB\";\"-100,09\";\"RUB\";\"\";\"Тестовая категория\";\"\";\"комментарий\";\"0,00\";\"0,00\";\"400,00\"";
 
+            TinkoffExpenseParser.ParseResult parseResult = TinkoffExpenseParser.Parse(csvLine);
             
-            var parsedExpense = TinkoffExpenseParser.Parse(csvLine);
-            
-            
-            Assert.AreEqual(expectedExpense, parsedExpense);
+            Assert.AreEqual(TinkoffExpenseParser.ParseStatus.OK, parseResult.Status);
+            Assert.AreEqual(expectedExpense, parseResult.Expense!);
         }
     }
 }

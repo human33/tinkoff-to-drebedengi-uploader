@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using T2DUploader.Model;
@@ -39,27 +40,43 @@ namespace T2DUploader
                     break;
                 }
 
-               Expense parsed = Parse(line);
-                yield return parsed;
+                ParseResult parsed = Parse(line);
+
+                if (parsed.Status != ParseStatus.OK) {
+                    continue;
+                }
+
+                yield return parsed.Expense!;
             }
         }
         
-        public static Expense Parse(string csvLine)
+        public enum ParseStatus {
+            OK,
+            UnableToParse,
+            FailedOperation
+        }
+        public record ParseResult(ParseStatus Status, Expense? Expense);
+
+        public static ParseResult Parse(string csvLine)
         {
             // todo: parse unprepared csv as well
             // example line format:
-            // "Дата операции";"Дата платежа";"Номер карты";"Статус";"Сумма операции";"Валюта операции";"Сумма платежа";"Валюта платежа";"Кэшбэк";"Категория";"MCC";"Описание";"Бонусы (включая кэшбэк)";"Округление на инвесткопилку";"Сумма операции с округлением"
-            // "07.11.2021 15:24:34";"07.11.2021";"*9894";"OK";"-1014,46";"RUB";"-1014,46";"RUB";"";"Супермаркеты";"5411";"ВкусВилл";"10,00";"0,00";"1014,46"
-            
-            string[] cols = csvLine.Split(';');
-            var date = cols[0];
-            var money = cols[1];
-            var currency = cols[2];
-            var category = cols[3];
-            var desc = cols[4];
-            var account = cols.Length > 5 
-                ? cols[5]
-                : null; // account name from drebedengi
+            //"Дата операции";"Дата платежа";"Номер карты";"Статус";"Сумма операции";"Валюта операции";"Сумма платежа";"Валюта платежа";"Кэшбэк";"Категория";"MCC";"Описание";"Бонусы (включая кэшбэк)";"Округление на инвесткопилку";"Сумма операции с округлением"
+            //"21.11.2020 21:59:15";"21.11.2020";"*7212";"OK";"-1000,00";"RUB";"-1000,00";"RUB";"";"Переводы/иб";"";"Перевод между счетами";"0,00";"0,00";"1000,00"
+
+
+            string[] cols = csvLine.Split(';').Select(s => s.Trim('"')).ToArray();
+            string date = cols[0];
+
+            string operationStatus = cols[3];
+            if (operationStatus != "OK") {
+                return new ParseResult(ParseStatus.FailedOperation, null);
+            }
+
+            string money = cols[6];
+            string currency = cols[7];
+            string category = cols[9];
+            string desc = cols[11];
 
             if (date == "Дата операции")
             {
@@ -80,15 +97,18 @@ namespace T2DUploader
             CultureInfo provider = CultureInfo.InvariantCulture; // I don't use culture specific format, so it's ok
             var parsedDate = DateTime.ParseExact(date, TINKOFF_DATE_FORMAT, provider);
 
-            return new Expense(
-                money: moneyNum,
-                currency: currency,
-                category: category,
-                account: account,
-                date: parsedDate,
-                comment: desc,
-                user: null,
-                expenseGroup: null
+            return new ParseResult(
+                ParseStatus.OK,
+                new Expense(
+                    money: moneyNum,
+                    currency: currency,
+                    category: category,
+                    account: null,
+                    date: parsedDate,
+                    comment: desc,
+                    user: null,
+                    expenseGroup: null
+                )
             );
         }
     }
