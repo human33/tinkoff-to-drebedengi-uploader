@@ -28,7 +28,7 @@ namespace T2DUploader.Model
 
         public bool Like(Expense expense)
         {
-            return Math.Abs((Date - expense.Date).TotalMinutes) < 10 && 
+            return Math.Abs((Date - expense.Date).TotalMinutes) < 40 && 
                 Math.Abs(Money - expense.Money) < 1M; // if difference only in one currency point
         }
         

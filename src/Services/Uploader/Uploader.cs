@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using T2DUploader.Model;
+using T2DUploader.Utility.Drebedengi;
 
 namespace T2DUploader.Services
 {
@@ -30,7 +31,20 @@ namespace T2DUploader.Services
 
                 var db = await Utility.Drebedengi.Parser.ParseExtendedFormat(_options.DrebedengiDump);
 
-                _drebedengiExpenses = db.Records.Select(r => {
+                var grouppedRecords = db.Records.Where(r => r.GroupId != null)
+                    .GroupBy(r => r.GroupId)
+                    .Select(g => {
+                        var f = g.First();
+
+                        return f with {
+                            Sum = g.Sum(r => r.Sum)
+                        };
+                    });
+                var allRecords = db.Records.Where(r => r.GroupId == null)
+                    .Union(grouppedRecords);
+                
+
+                _drebedengiExpenses = allRecords.Select(r => {
                     var currency = db.Currencies[r.CurrencyId];
                     var account = db.Objects[r.AccountId];
 
@@ -69,6 +83,7 @@ namespace T2DUploader.Services
                 : System.Console.Out;
 
             List<Expense> expensesInDrebedengi = await GetDrebedengiExpenses();
+
             Expense? alikeExpense = expensesInDrebedengi.FirstOrDefault(e => e.Like(expense));
 
             if (alikeExpense != null)
@@ -94,10 +109,11 @@ namespace T2DUploader.Services
             // ignore drebedengi user and expense group because the don't matter here
             return expense1.Money        == expense2.Money &&
                    expense1.Currency     == expense2.Currency &&
-                   expense1.Category     == expense2.Category &&
-                //   expense1.Account      == expense2.Account &&
-                   expense1.Date         == expense2.Date &&
-                   expense1.Comment      == expense2.Comment;
+                   //    expense1.Category     == expense2.Category &&
+                   //   expense1.Account      == expense2.Account &&
+                   System.Math.Abs((expense1.Date - expense2.Date).TotalMinutes) <= 7;
+                //    expense1.Comment      == expense2.Comment
+                   ;
         }
     }
 }
