@@ -8,7 +8,7 @@ namespace T2DUploader.Services
     {
         // private object _lock = new object();
 
-        public Task<bool> ShouldUploadAlike(Expense fromDrebedengi, Expense fromTinkoff)
+        public async Task<bool> ShouldUploadAlike(Expense fromDrebedengi, Expense fromTinkoff)
         {
             // var message = $"Expense for {fromTinkoff.Date.ToString("o")} "+
             //     $"with sum {fromTinkoff.Money} was found in Drebedengi " +
@@ -27,11 +27,17 @@ namespace T2DUploader.Services
                 $"ExpenseGroup:\t{fromTinkoff.ExpenseGroup ?? "None"}\t{fromDrebedengi.ExpenseGroup ?? "None"}\n" +
                 "Upload anyway?";
 
-            Console.WriteLine(message);
-            Console.WriteLine("type y(yes) or n(no) to confirm or deny");
+            await Console.Out.WriteLineAsync(message);
+            await Console.Out.WriteLineAsync("type y(yes) or n(no) to confirm or deny");
             ConsoleKeyInfo key = Console.ReadKey();
-            return Task.FromResult(key.KeyChar == 'y');
+            return key.KeyChar == 'y';
         }
 
+        public async Task ThereIsNoPairedExpenseFor(Expense expense)
+        {
+            string message = "There is no paired expense for expense with sum: " + 
+                expense.Money + ", and desc:" + expense.Comment;
+            await Console.Out.WriteLineAsync(message);
+        }
     }
 }
