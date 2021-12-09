@@ -23,7 +23,6 @@ namespace T2DUploader.Services.ExpenseMapper
             IAsyncEnumerable<Expense> tinkoffExpenses = TinkoffExpenseParser.Parse(_options.TinkoffDump);
             
             // todo: notify about income entries (ignore them or upload as income?)
-            // todo: ignore ozon (desc "Операция в других кредитных организациях OZONCARD-CUPC-PAY NOVOSIBIRSK RUS") 
             // todo: ignore expenses with - and + entries for the same card (returns)
 
             Dictionary<string, Expense> toRemovePaired = new();
@@ -34,7 +33,12 @@ namespace T2DUploader.Services.ExpenseMapper
                 if (string.IsNullOrWhiteSpace(expense.Account) && 
                     _options.DescriptionToAccount.TryGetValue(expense.Comment, out string? account))
                 {
-                    // 
+                    if (account == "ignore_minus" && expense.Money < 0) 
+                    {
+                        continue;
+                    }
+
+
                     if (account == "remove_paired") 
                     {
                         if (toRemovePaired.Remove(expense.Comment, out var pairedExpense)) 
