@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>T2DUploader</RootNamespace>
     <Nullable>enable</Nullable>
     <GenerateProgramFile>false</GenerateProgramFile>

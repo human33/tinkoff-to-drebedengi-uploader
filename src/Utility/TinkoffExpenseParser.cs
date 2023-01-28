@@ -85,7 +85,7 @@ namespace T2DUploader
             
             // decimal point in drebedengi is '.', but it's ',' in tinkoff
             money = money.Replace(',', '.');
-            decimal moneyNum = Decimal.Parse(money);
+            decimal moneyNum = Decimal.Parse(money, System.Globalization.CultureInfo.InvariantCulture);
 
             currency = currency switch
             {
