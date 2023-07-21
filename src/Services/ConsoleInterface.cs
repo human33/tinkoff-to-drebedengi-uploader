@@ -36,7 +36,15 @@ namespace T2DUploader.Services
         public async Task ThereIsNoPairedExpenseFor(Expense expense)
         {
             string message = "There is no paired expense for expense with sum: " + 
-                expense.Money + ", and desc:" + expense.Comment;
+                expense.Money + "; and desc: " + expense.Comment + ".";
+            await Console.Out.WriteLineAsync(message);
+        }
+        
+        public async Task FoundCurrencyExchange(Expense nextExpense, Expense expense)
+        {
+            // use -expense.Money, because it's a withdrawal from one account to another inside the bank  
+            string message = "Notice! Currency exchange found " + expense.Date + "; " + expense.Money +" "+ expense.Currency + " → " + 
+              (-nextExpense.Money) +" "+ nextExpense.Currency + "; Exchange rate: " + (-Math.Round(nextExpense.Money / expense.Money , 2));
             await Console.Out.WriteLineAsync(message);
         }
     }

@@ -48,9 +48,16 @@ namespace T2DUploader.Services.ExpenseMapper
                                 // it's totally ok
                                 continue;   
                             }
+                            else if (pairedExpense.Currency != expense.Currency) 
+                            {
+                                // expenses go from newest to oldest, so next expense is the one that was seen
+                                await _interface.FoundCurrencyExchange(nextExpense: pairedExpense, expense: expense);
+                                continue;
+                            }
                             else 
                             {
                                 // it's a bad thing, means that there is no paired expense with opposite sign
+                                // show what didn't match beacause it could be a currency conversion
                                 await _interface.ThereIsNoPairedExpenseFor(pairedExpense);
                                 break;
                             }

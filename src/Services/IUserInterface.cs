@@ -7,5 +7,6 @@ namespace T2DUploader.Services
     {
         Task<bool> ShouldUploadAlike(Expense fromDrebedengi, Expense fromTinkoff);
         Task ThereIsNoPairedExpenseFor(Expense expense);
+        Task FoundCurrencyExchange(Expense expense, Expense nextExpense);
     }
 }
